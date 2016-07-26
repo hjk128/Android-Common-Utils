@@ -1,5 +1,6 @@
 package com.huojk.util;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -12,7 +13,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import coder.prettygirls.app.MyApplication;
 
 /**
  * bitmap处理工具类
@@ -42,7 +42,7 @@ public class BitmapUtil {
         return bitmap;
     }
 
-    public static boolean saveBitmap(Bitmap bitmap, String dir, String name, boolean isShowPhotos) {
+    public static boolean saveBitmap(Context context, Bitmap bitmap, String dir, String name, boolean isShowPhotos) {
         File path = new File(dir);
         if (!path.exists()) {
             path.mkdirs();
@@ -82,13 +82,13 @@ public class BitmapUtil {
         // 其次把文件插入到系统图库
         if (isShowPhotos) {
             try {
-                MediaStore.Images.Media.insertImage(MyApplication.getIntstance().getContentResolver(),
+                MediaStore.Images.Media.insertImage(context.getContentResolver(),
                         file.getAbsolutePath(), name, null);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
             // 最后通知图库更新
-            MyApplication.getIntstance().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file)));
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file)));
         }
 
         return true;
